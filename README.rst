@@ -25,6 +25,7 @@ Requirements
 ============
 
 It requires the following python packages:
+
 - ``csv``
 - ``argparse``
 - ``mpmath``
@@ -66,10 +67,10 @@ Bibliography
 ============
 
 .. [1] Aaron Causet, Cosma Rohilla Shalizi and M. E. J. Newman: Power-law distributions in empirical data.
-	   *SIAM Review* **51**(4) (2009): 661-703.
+	   *SIAM Review* **51** (4) (2009): 661-703.
 
 .. [2] M. P. H. Stumpf and P. J. Ingram: Probability models for degree distributions of protein interaction networks.
-	   *Europhys. Lett.* **71**(1) (2005): 152-158.
+	   *Europhys. Lett.* **71** (1) (2005): 152-158.
 
 .. [3] Gideon Schwarz: Estimating the dimension of a model.
-	   *The Annals of Statistics* **6**(2) (1978): 461-464.
+	   *The Annals of Statistics* **6** (2) (1978): 461-464.
