@@ -119,7 +119,7 @@ def test_aic_ms(distribution):
         aic[d] = me.aic_measure(dist.log_likelihood(d, fit_results[d]['params'], test_sample, nonzero_only=True),
                                 len(fit_results[d]['params']))
     delta_aic = {d: aic[d]-min(aic.values()) for d in aic}
-    weights = {d: exp(-delta_aic[d]/2) for d in delta_aic}
+    weights = {d: float(exp(-delta_aic[d]/2)) for d in delta_aic}
     best_model = dist.DISTRIBUTIONS[0]
     print("  input parameters: %s" % dist.get_params(params, distribution))
     for d in dist.DISTRIBUTIONS:
@@ -157,7 +157,7 @@ def test_bic_ms(distribution):
         bic[d] = me.bic_measure(dist.log_likelihood(d, fit_results[d]['params'], test_sample, nonzero_only=True),
                                 len(fit_results[d]['params']), len(test_sample))
     delta_bic = {d: bic[d]-min(bic.values()) for d in bic}
-    weights = {d: exp(-delta_bic[d]/2) for d in delta_bic}
+    weights = {d: float(exp(-delta_bic[d]/2)) for d in delta_bic}
     print("  input parameters: %s" % dist.get_params(params, distribution))
     for d in dist.DISTRIBUTIONS:
         weights[d] /= sum(weights.values())
