@@ -14,13 +14,20 @@ from core import core as co
 
 
 class Poisson(co.RealDistribution):
+    """
+    Poisson distribution:
+
+    Poisson(x) = lambda^x * exp(-lambda) / x!.
+
+    If lambda is too small, it is replaced by a delta function.
+    """
 
     @staticmethod
     def pmf(params, domain=co.DEFAULT_PDF_MAX):
         """
-        Probability mass function of the Poisson distribution.
+        Probability mass function.
 
-        :param params: a one-element list containing the shape (lambda) parameter.
+        :param params: a one element list containing the shape (lambda) parameter.
         :param domain: maximum of the domain.
         :return: probability mass function.
         """
@@ -34,10 +41,10 @@ class Poisson(co.RealDistribution):
         """
         Returns samples with Poisson distribution.
 
-        :param params: a one-element list containing the shape (lambda) parameter.
+        :param params: a one element list containing the shape (lambda) parameter.
         :param size: number of samples.
         :param domain: unused.
-        :return: numpy array of samples.
+        :return: samples.
         """
         if params[0] < co.EPSILON:
             return co.delta.samples([0], size)
@@ -45,13 +52,13 @@ class Poisson(co.RealDistribution):
             return np.random.poisson(params[0], size)
 
     @staticmethod
-    def log_likelihood(params, data):
+    def log_likelihood(params, data, nonzero=False):
         """
-        Calculates the log-likelihood of the specified Poisson distribution on the data.
+        Calculates the log-likelihood on the data.
 
-        :param params: a one-element list containing the shape (lambda) parameter.
+        :param params: a one element list containing the shape (lambda) parameter.
         :param data: input data as a numpy array.
-
+        :param nonzero: unused.
         :return: log-likelihood.
         """
         _nonzero_samples = data[np.where(data > 0)]

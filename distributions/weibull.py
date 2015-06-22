@@ -14,16 +14,19 @@ from core import core as co
 
 class Weibull(co.RealDistribution):
     """
-    Weibull distribution.
+    Weibull distribution:
+
+    Weibull(x) = (k/lambda) * (x/lambda)^(k-1) * exp(-(x/lambda)^k).
     If the shape or scale parameters are very small, a delta distribution is used.
     """
 
     @staticmethod
     def pmf(params, domain=co.DEFAULT_PDF_MAX):
         """
-        Probability mass function of the Weibull distribution taken at integer values.
+        Probability mass function at integer values.
 
-        :param params: two elements list containing the shape (k) and scale (lambda) parameters.
+        :param params: two elements list containing the shape (k) and scale (lambda)
+        parameters.
         :param domain: domain size.
         :return: probability mass function.
         """
@@ -43,7 +46,8 @@ class Weibull(co.RealDistribution):
         """
         Returns samples with discrete Weibull distribution.
 
-        :param params: two elements list containing the shape (k) and scale (lambda) parameters.
+        :param params: two elements list containing the shape (k) and scale (lambda)
+        parameters.
         :param size: number of samples.
         :param domain: domain size.
         :return: numpy array of samples.
@@ -59,12 +63,14 @@ class Weibull(co.RealDistribution):
                 return co.generate_discrete_samples(x, p, size)
 
     @staticmethod
-    def log_likelihood(params, data):
+    def log_likelihood(params, data, nonzero=False):
         """
         Calculates the log-likelihood of the Weibull distribution on the data.
 
-        :param params: two elements list containing the shape (k) and scale (lambda) parameters.
+        :param params: two elements list containing the shape (k) and scale (lambda)
+        parameters.
         :param data: input data as a numpy array.
+        :param nonzero: unused.
         :return: log-likelihood.
         """
         nonzero_samples = data[np.where(data > 0)]

@@ -14,8 +14,7 @@ from calculation import model_selection as ms
 
 
 a = args.Args(name="model.py",
-              desc="Selects the best model for a distribution.",
-              show_settings=True)
+              desc="Selects the best model for a distribution.")
 params = a\
     .add(key='--input', dest='input', default=None,
          help='Input file containing the measured samples.')\
@@ -24,17 +23,17 @@ params = a\
     .add(key='--select', dest='select', default=None,
          help='Model selection with the given method to use (%s)' % ', '.join(ms.AVAILABLE_METHODS))\
     .add(key='--test-sampling', dest='test_sampling', default=None,
-         help='Test sampling from the given distribution (%s)' % ', '.join(dist.DISTRIBUTIONS))\
+         help='Test sampling from the given distribution (%s)' % ', '.join(dist.get()))\
     .add(key='--test-mle-fit', dest='test_mle_fit', default=None,
-         help='Test MLE fit for the given distribution (%s)' % ', '.join(dist.DISTRIBUTIONS))\
+         help='Test MLE fit for the given distribution (%s)' % ', '.join(dist.get()))\
     .add(key='--test-ks-fit', dest='test_ks_fit', default=None,
-         help='Test K-S fit for the given distribution (%s)' % ', '.join(dist.DISTRIBUTIONS))\
+         help='Test K-S fit for the given distribution (%s)' % ', '.join(dist.get()))\
     .add(key='--test-aic-ms', dest='test_aic_ms', default=None,
-         help='Test AIC model selection for the given distribution (%s)' % ', '.join(dist.DISTRIBUTIONS))\
+         help='Test AIC model selection for the given distribution (%s)' % ', '.join(dist.get()))\
     .add(key='--test-bic-ms', dest='test_bic_ms', default=None,
-         help='Test BIC model selection for the given distribution (%s)' % ', '.join(dist.DISTRIBUTIONS))\
+         help='Test BIC model selection for the given distribution (%s)' % ', '.join(dist.get()))\
     .add(key='--test-ks-ms', dest='test_ks_ms', default=None,
-         help='Test K-S model selection for the given distribution (%s)' % ', '.join(dist.DISTRIBUTIONS))\
+         help='Test K-S model selection for the given distribution (%s)' % ', '.join(dist.get()))\
     .get()
 
 # Testing

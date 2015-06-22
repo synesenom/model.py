@@ -10,12 +10,35 @@ import argparse
 
 
 class Args:
-    def __init__(self, name="", desc="", show_settings=False):
+    """
+    Class that manages arguments.
+    More or less just a layer between argparse and the script.
+    """
+    def __init__(self, name="", desc=""):
+        """
+        Initializer.
+
+        :param name: name of the script.
+        :param desc: description of th script.
+        """
         self._parser = argparse.ArgumentParser(prog=name, description=desc)
-        self._show_settings = show_settings
         self._arguments = list()
 
     def add(self, key, type=str, required=False, nargs=None, action="store", dest="", default=0, help=""):
+        """
+        Adds an argument. It returns the object itself in order to chain arguments
+        together.
+
+        :param key: key for argument.
+        :param type: type of argument.
+        :param required: is it required?
+        :param nargs: number of arguments.
+        :param action: what to do with the argument?
+        :param dest: destination variable.
+        :param default: default value.
+        :param help: content of help menu.
+        :return: the object itself.
+        """
         if action == "store":
             self._parser.add_argument(key,
                                       type=type,
@@ -35,10 +58,14 @@ class Args:
         return self
 
     def get(self):
+        """
+        Prints argument values and returns the parameters parsed from the parser.
+
+        :return: parameters in a dictionary.
+        """
         _args = vars(self._parser.parse_args())
-        if self._show_settings:
-            print("")
-            for _a in self._arguments:
-                print("%s: %s" % (_a, _args[_a]))
-            print("")
+        print("")
+        for _a in self._arguments:
+            print("%s: %s" % (_a, _args[_a]))
+        print("")
         return _args

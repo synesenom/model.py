@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #title          : core.py
-#description    : Abstract base class for core.
+#description    : Core methods for distributions.
 #author         : Enys Mones
 #date           : 2015.06.19
 #version        : 0.1
@@ -13,9 +13,9 @@ from mpmath import ln, sqrt
 #############
 # CONSTANTS #
 #############
-# Tolerance for substitution of core.
-# For performance and robustness reasons, some core are approximated
-# by delta or uniform core, when their parameters approach some critical
+# Tolerance for substitution of a distribution.
+# For performance and robustness reasons, some distribution are approximated
+# by delta or uniform distribution, when their parameters approach some critical
 # values. EPSILON is used for detecting these cases.
 EPSILON = 0.001
 
@@ -35,9 +35,9 @@ DEFAULT_SAMPLE_SIZE = 10000
 ###########
 class RealDistribution():
     """
-    The abstract base class for all the core.
+    The abstract base class for the distributions.
 
-    All core have to implement the following:
+    All distribution have to implement the following:
     1) Probability mass function for testing and K-S optimization.
     2) Sampling method for testing and p-values of K-S statistics.
     3) Log-likelihood for MLE and information criteria.
@@ -49,30 +49,32 @@ class RealDistribution():
         Returns the probability mass function.
 
         :param params: a list containing the parameters.
-        :param domain: domain size of the probability mass function.
-        :return: probability mass function.
+        :param domain: domain size.
+        :return: probability mass function as a numpy array.
         """
         raise NotImplementedError("Subclass must implement pmf(params, domain).")
 
     @staticmethod
     def samples(params, size=DEFAULT_SAMPLE_SIZE, domain=DEFAULT_SAMPLE_MAX):
         """
-        Returns a give number of samples.
+        Returns a given number of samples.
 
         :param params: a list containing the parameters.
         :param size: number of samples to return.
-        :param domain: domain size of the samples to draw from.
+        :param domain: domain size.
         :return: samples in a numpy array.
         """
         raise NotImplementedError("Subclass must implement samples(params, size, domain).")
 
     @staticmethod
-    def log_likelihood(params, data):
+    def log_likelihood(params, data, nonzero_only=False):
         """
         Returns the log-likelihood of the distribution for a given sample.
 
         :param params: a list containing the parameters.
         :param data: the data over which the log-likelihood should be calculated.
+        :param nonzero_only: whether nonzero elements should be considered only. In some
+        cases, this parameter is unused.
         :return: the log-likelihood.
         """
         raise NotImplementedError("Subclass must implement log_likelihood(params, data).")
@@ -83,8 +85,9 @@ class RealDistribution():
         Returns a printable string of the distribution parameters.
 
         :param params: list of parameters.
-        :return: printable string in the format of '(<name1>, <name2>, ...) = (<value1>, <value2>, ...)'
-        where <nameX> and <valueX> corresponds to the name and value of parameter X.
+        :return: printable string in the format of '(<name1>, <name2>, ...) = (<value1>,
+        <value2>, ...)',  where <nameX> and <valueX> corresponds to the name and value of
+        parameter X.
         """
         return NotImplementedError("Subclass must implement get_params(params).")
 
@@ -92,8 +95,8 @@ class RealDistribution():
 class Delta(RealDistribution):
     """
     Dirac delta distribution.
-    This distribution is used for approximating other distributions when some parameters
-    approach critical values and they can be replaced by a delta function safely.
+    This distribution is used to approximate other distributions when some parameters
+    approach critical values.
     """
 
     @staticmethod
@@ -137,8 +140,9 @@ delta = Delta()
 class Uniform(RealDistribution):
     """
     Uniform distribution.
-    Mostly used when other distributions are approximated in case of some of their parameters
-    approach critical values where they can be replaced by a uniform distribution safely.
+    Mostly used when other distributions are approximated in case of some of their
+    parameters approach critical values where they can be replaced by a uniform
+    distribution safely.
     """
 
     @staticmethod
@@ -182,13 +186,11 @@ def generate_discrete_samples(values, probabilities, size=DEFAULT_SAMPLE_SIZE):
     Generates a sample of discrete random variables specified by the probabilities.
 
     :param values: domain of values.
-    :param probabilities: probabilities. Must have the same length as the domain of values.
+    :param probabilities: probabilities, must have the same length as the domain of
+    values.
     :param size: number of samples to return.
     :return: list of samples.
     """
-    if len(values) != len(probabilities):
-        print("Error: len(x) != len(p)")
-        return
-    else:
-        _random_sampler = stats.rv_discrete(values=(values, probabilities/np.sum(probabilities)))
-        return _random_sampler.rvs(size=size)
+    assert len(values) == len(probabilities)
+    _random_sampler = stats.rv_discrete(values=(values, probabilities/np.sum(probabilities)))
+    return _random_sampler.rvs(size=size)

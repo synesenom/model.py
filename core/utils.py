@@ -9,14 +9,15 @@
 import csv
 
 
-def read_csv(filenam):
+def read_csv(filename):
     """
     Reads data from a csv file.
+    Note: first line is reserved for header, so it is ignored.
 
-    :param filenam: name of the data file.
+    :param filename: name of the data file.
     :return: data in a list structure.
     """
-    with open(filenam, 'r') as _input_file:
+    with open(filename, 'r') as _input_file:
         return list(list(row) for row in csv.reader(_input_file, delimiter=' '))[1:]
 
 

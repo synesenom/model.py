@@ -13,12 +13,19 @@ from core import core as co
 
 
 class Exponential(co.RealDistribution):
+    """
+    Discrete exponential distribution:
+
+    Exponential(x) = C * exp(-x/beta),
+
+    where C = (1-exp(-1/beta)).
+    If the scale parameter is very small, a delta distribution is used.
+    """
 
     @staticmethod
     def pmf(params, domain=co.DEFAULT_PDF_MAX):
         """
-        Probability mass function of the discrete exponential distribution.
-        If the scale parameter is very small, a delta distribution is used.
+        Probability mass function.
 
         :param params: single element list containing the scale (beta) parameter.
         :param domain: domain size.
@@ -50,12 +57,13 @@ class Exponential(co.RealDistribution):
     @staticmethod
     def log_likelihood(params, data, nonzero_only=False):
         """
-        Calculates the log-likelihood for the exponential distribution on the data.
+        Calculates the log-likelihood on the data.
 
         :param params: single element list containing the scale (beta) parameter.
         :param data: input data as a numpy array.
-        :param nonzero_only: whether nonzero element should be considered only. This is used after
-        determining the parameters and comparing to distributions that ignore zero values.
+        :param nonzero_only: whether nonzero element should be considered only.  This is
+        used after determining the parameters and comparing to distributions that ignore
+        zero values.
         :return: log-likelihood.
         """
         if params[0] < co.EPSILON:

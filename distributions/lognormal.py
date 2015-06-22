@@ -14,16 +14,21 @@ from core import core as co
 
 class Lognormal(co.RealDistribution):
     """
-    Log-normal distribution.
+    Log-normal distribution:
+
+    Lognormal(x) = C * exp(-(ln(x)-mu)^2 / (2*sigma^2)) / x,
+
+    where C = 1/(sigma*sqrt(2*pi)).
     If the shape parameter is very small, a delta distribution is used.
     """
 
     @staticmethod
     def pmf(params, domain=co.DEFAULT_PDF_MAX):
         """
-        Probability mass function of the log-normal distribution taken at integer values.
+        Probability mass function at integer values.
 
-        :param params: two elements list with the location (mu) and shape (sigma) parameters.
+        :param params: two elements list with the location (mu) and shape (sigma)
+        parameters.
         :param domain: domain size.
         :return: probability mass function.
         """
@@ -38,7 +43,8 @@ class Lognormal(co.RealDistribution):
         """
         Returns samples with discrete log-normal distribution.
 
-        :param params: single element list containing the scale (beta) parameter.
+        :param params: two elements list with the location (mu) and shape (sigma)
+        parameters.
         :param size: number of samples.
         :param domain: unused.
         :return: numpy array of samples.
@@ -54,12 +60,14 @@ class Lognormal(co.RealDistribution):
     @staticmethod
     def log_likelihood(params, data, nonzero_only=False):
         """
-        Calculates the log-likelihood for the log-normal distribution on the data.
+        Calculates the log-likelihood on the data.
 
-        :param params: single element list containing the scale (beta) parameter.
+        :param params: two elements list with the location (mu) and shape (sigma)
+        parameters.
         :param data: input data as a numpy array.
-        :param nonzero_only: whether nonzero element should be considered only. This is used after
-        determining the parameters and comparing to distributions that ignore zero values.
+        :param nonzero_only: whether nonzero element should be considered only.  This is
+        used after determining the parameters and comparing to distributions that ignore
+        zero values.
         :return: log-likelihood.
         """
         """

@@ -14,17 +14,20 @@ from core import core as co
 
 class ShiftedPowerLaw(co.RealDistribution):
     """
-    Power-law with a shift in location.
-    If the exponent and shift are too small, or the normalizing constant is too large,
-    the distribution is approximated by a delta function.
-    If the exponent is very small but the shift is finite, the distribution is approximated
-    by a uniform distribution.
+    Power-law with a shift in location:
+
+    ShiftedPowerLaw(x) = C * (x + x0)^(-gamma),
+
+    where C = zeta(gamma, x0), with zeta being the Hurwitz zeta function. If the exponent
+    and shift are too small,  or the normalizing constant is too large,  the distribution
+    is approximated by a delta function.  If the exponent is very small  but the shift is
+    finite, the distribution is approximated by a uniform distribution.
     """
 
     @staticmethod
     def pmf(params, domain=co.DEFAULT_PDF_MAX):
         """
-        Probability mass function of the discrete shifted power-law.
+        Probability mass function.
 
         :param params: two elements list containing the exponent (gamma) and shift (x0).
         :param domain: domain size.
@@ -67,10 +70,13 @@ class ShiftedPowerLaw(co.RealDistribution):
     @staticmethod
     def log_likelihood(params, data, nonzero_only=False):
         """
-        Calculates the log-likelihood of the discrete shifted power-law on the data.
+        Calculates the log-likelihood on the data.
 
         :param params: two elements list containing the exponent (gamma) and shift (x0).
         :param data: input data as a numpy array.
+        :param nonzero_only:  whether nonzero element should be considered only.  This is
+        used after determining the parameters  and comparing to distributions that ignore
+        zero values.
         :return: log-likelihood.
         """
         if params[0] < co.EPSILON:

@@ -64,7 +64,7 @@ def test_fit_mle(distribution):
     """
     print("TESTING: MLE fit for %s distribution" % distribution.upper())
     print("  fitting to others")
-    for sample_dist in dist.DISTRIBUTIONS:
+    for sample_dist in dist.get():
         print("    %s" % sample_dist.upper())
         params = DEFAULT_TEST_PARAMS[sample_dist]
         test_sample = dist.sample(sample_dist, params)
@@ -86,7 +86,7 @@ def test_fit_ks(distribution):
     """
     print("TESTING: K-S fit for %s distribution" % distribution.upper())
     print("  fitting to others")
-    for sample_dist in dist.DISTRIBUTIONS:
+    for sample_dist in dist.get():
         print("    %s" % sample_dist.upper())
         params = DEFAULT_TEST_PARAMS[sample_dist]
         test_sample = dist.sample(sample_dist, params)
@@ -114,15 +114,15 @@ def test_aic_ms(distribution):
     print("  calculating AIC for all distributions")
     fit_results = {}
     aic = {}
-    for d in dist.DISTRIBUTIONS:
+    for d in dist.get():
         fit_results[d] = fit.fit_mle(d, test_sample)
         aic[d] = me.aic_measure(dist.log_likelihood(d, fit_results[d]['params'], test_sample, nonzero_only=True),
                                 len(fit_results[d]['params']))
     delta_aic = {d: aic[d]-min(aic.values()) for d in aic}
     weights = {d: float(exp(-delta_aic[d]/2)) for d in delta_aic}
-    best_model = dist.DISTRIBUTIONS[0]
+    best_model = dist.get()[0]
     print("  input parameters: %s" % dist.get_params(params, distribution))
-    for d in dist.DISTRIBUTIONS:
+    for d in dist.get():
         if weights[d] > weights[best_model]:
             best_model = d
         weights[d] /= sum(weights.values())
@@ -152,14 +152,14 @@ def test_bic_ms(distribution):
     print("  calculating BIC for all distributions")
     fit_results = {}
     bic = {}
-    for d in dist.DISTRIBUTIONS:
+    for d in dist.get():
         fit_results[d] = fit.fit_mle(d, test_sample)
         bic[d] = me.bic_measure(dist.log_likelihood(d, fit_results[d]['params'], test_sample, nonzero_only=True),
                                 len(fit_results[d]['params']), len(test_sample))
     delta_bic = {d: bic[d]-min(bic.values()) for d in bic}
     weights = {d: float(exp(-delta_bic[d]/2)) for d in delta_bic}
     print("  input parameters: %s" % dist.get_params(params, distribution))
-    for d in dist.DISTRIBUTIONS:
+    for d in dist.get():
         weights[d] /= sum(weights.values())
         print("  %s:" % d.upper())
         print("    %s" % dist.get_params(fit_results[d]['params'], d))
@@ -187,8 +187,8 @@ def test_ks_ms(distribution):
     print("  input parameters: %s" % dist.get_params(params, distribution))
     fit_results = {}
     best_ksd = 1.0
-    best_model = dist.DISTRIBUTIONS[0]
-    for d in dist.DISTRIBUTIONS:
+    best_model = dist.get()[0]
+    for d in dist.get():
         print("  %s:" % d.upper())
         fit_results[d] = fit.fit_ks(d, test_sample)
         if fit_results[d]['D'] < best_ksd:

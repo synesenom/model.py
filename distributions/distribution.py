@@ -24,15 +24,25 @@ DISTRIBUTION_WEIBULL = 'weibull'
 DISTRIBUTION_SHIFTED_POWER_LAW = 'shifted-power-law'
 DISTRIBUTION_TRUNCATED_POWER_LAW = 'truncated-power-law'
 
-# List containing all distributions
-DISTRIBUTIONS = [
-    DISTRIBUTION_POISSON,
-    DISTRIBUTION_EXPONENTIAL,
-    DISTRIBUTION_SHIFTED_POWER_LAW,
-    DISTRIBUTION_TRUNCATED_POWER_LAW,
-    DISTRIBUTION_LOGNORMAL,
-    DISTRIBUTION_WEIBULL
-]
+
+# Dictionary containing the classes
+DISTRIBUTIONS = {
+    DISTRIBUTION_POISSON: poisson,
+    DISTRIBUTION_EXPONENTIAL: exponential,
+    DISTRIBUTION_SHIFTED_POWER_LAW: shifted_power_law,
+    DISTRIBUTION_TRUNCATED_POWER_LAW: truncated_power_law,
+    DISTRIBUTION_LOGNORMAL: lognormal,
+    DISTRIBUTION_WEIBULL: weibull
+}
+
+
+def get():
+    """
+    Simply returns a sorted list of the available distributions.
+
+    :return: sorted list of available distributions.
+    """
+    return sorted(list(DISTRIBUTIONS.keys()))
 
 
 def get_sample_pmf(samples):
@@ -40,12 +50,9 @@ def get_sample_pmf(samples):
     Creates the probability mass function from a sample of values.
 
     :param samples: sample of values.
-    :return: probability mass function
+    :return: probability mass function as a numpy array.
     """
-    _sample_pmf = [0] * int(np.max(samples)+1)
-    for _s in samples:
-        _sample_pmf[int(_s)] += 1
-    return np.array(_sample_pmf)/len(samples)
+    return np.histogram(samples, range(np.max(samples)))[0] / len(samples)
 
 
 def get_sample_cdf(samples):
@@ -67,18 +74,7 @@ def pmf(distribution, params, domain=co.DEFAULT_PDF_MAX):
     :param domain: domain size.
     :return: probability mass function.
     """
-    if distribution == DISTRIBUTION_POISSON:
-        return poisson.pmf(params, domain=domain)
-    if distribution == DISTRIBUTION_EXPONENTIAL:
-        return exponential.pmf(params, domain=domain)
-    if distribution == DISTRIBUTION_LOGNORMAL:
-        return lognormal.pmf(params, domain=domain)
-    if distribution == DISTRIBUTION_WEIBULL:
-        return weibull.pmf(params, domain=domain)
-    if distribution == DISTRIBUTION_TRUNCATED_POWER_LAW:
-        return truncated_power_law.pmf(params, domain=domain)
-    if distribution == DISTRIBUTION_SHIFTED_POWER_LAW:
-        return shifted_power_law.pmf(params, domain=domain)
+    return DISTRIBUTIONS[distribution].pmf(params, domain=domain)
 
 
 def cdf(distribution, params, domain=co.DEFAULT_PDF_MAX):
@@ -102,18 +98,7 @@ def sample(distribution, params, size=co.DEFAULT_SAMPLE_SIZE):
     :param size: sample size
     :return: numpy array of samples.
     """
-    if distribution == DISTRIBUTION_POISSON:
-        return poisson.samples(params, size=size)
-    if distribution == DISTRIBUTION_EXPONENTIAL:
-        return exponential.samples(params, size=size)
-    if distribution == DISTRIBUTION_LOGNORMAL:
-        return lognormal.samples(params, size=size)
-    if distribution == DISTRIBUTION_WEIBULL:
-        return weibull.samples(params, size=size)
-    if distribution == DISTRIBUTION_TRUNCATED_POWER_LAW:
-        return truncated_power_law.samples(params, size=size)
-    if distribution == DISTRIBUTION_SHIFTED_POWER_LAW:
-        return shifted_power_law.samples(params, size=size)
+    return DISTRIBUTIONS[distribution].sample(params, size=size)
 
 
 def log_likelihood(distribution, params, data, nonzero_only=False):
@@ -126,18 +111,7 @@ def log_likelihood(distribution, params, data, nonzero_only=False):
     :param nonzero_only: whether only non-zero data points should be used.
     :return: log-likelihood.
     """
-    if distribution == DISTRIBUTION_POISSON:
-        return poisson.log_likelihood(params, data)
-    if distribution == DISTRIBUTION_EXPONENTIAL:
-        return exponential.log_likelihood(params, data, nonzero_only)
-    if distribution == DISTRIBUTION_LOGNORMAL:
-        return lognormal.log_likelihood(params, data)
-    if distribution == DISTRIBUTION_WEIBULL:
-        return weibull.log_likelihood(params, data)
-    if distribution == DISTRIBUTION_TRUNCATED_POWER_LAW:
-        return truncated_power_law.log_likelihood(params, data)
-    if distribution == DISTRIBUTION_SHIFTED_POWER_LAW:
-        return shifted_power_law.log_likelihood(params, data, nonzero_only)
+    return DISTRIBUTIONS[distribution].log_likelihood(params, data, nonzero_only)
 
 
 def get_params(params, distribution):
@@ -148,15 +122,4 @@ def get_params(params, distribution):
     :param distribution: distribution to use.
     :return: printable string of the parameter values.
     """
-    if distribution == DISTRIBUTION_POISSON:
-        return poisson.get_params(params)
-    if distribution == DISTRIBUTION_EXPONENTIAL:
-        return exponential.get_params(params)
-    if distribution == DISTRIBUTION_LOGNORMAL:
-        return lognormal.get_params(params)
-    if distribution == DISTRIBUTION_WEIBULL:
-        return weibull.get_params(params)
-    if distribution == DISTRIBUTION_TRUNCATED_POWER_LAW:
-        return truncated_power_law.get_params(params)
-    if distribution == DISTRIBUTION_SHIFTED_POWER_LAW:
-        return shifted_power_law.get_params(params)
+    return DISTRIBUTIONS[distribution].get_params(params)

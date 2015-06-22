@@ -31,7 +31,8 @@ def aic_measure(log_likelihood, params_num):
     """
     Returns the Akaike information criterion value, that is
     AIC = -2ln(L) + 2m,
-    where L is the likelihood in the optimum and m is the number of parameters in the model.
+    where L is the likelihood in the optimum and m is the number of parameters in the
+    model.
 
     :param log_likelihood: optimized log-likelihood.
     :param params_num: number of model parameters.
@@ -44,7 +45,8 @@ def bic_measure(log_likelihood, params_num, sample_size):
     """
     Returns the Bayesian information criterion value, that is
     BIC = -2ln(L) + m*ln(n),
-    where L is the likelihood in the optimum, m and n are the number of model parameters and the sample size.
+    where L is the likelihood in the optimum, m and n are the number of model parameters
+    and the sample size.
 
     :param log_likelihood: optimized log-likelihood.
     :param params_num: number of model parameters.

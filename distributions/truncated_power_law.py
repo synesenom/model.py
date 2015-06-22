@@ -14,18 +14,23 @@ from core import core as co
 
 class TruncatedPowerLaw(co.RealDistribution):
     """
-    Power-law with cutoff.
-    If the cutoff is very small or the exponent is too large, the distribution is approximated
-    by a delta function.
-    If the exponent is very small, the distribution is approximated by a uniform distribution.
+    Power-law with cutoff:
+
+    TruncatedPowerLaw(x) = C * x^(-gamma) * exp(-x/kappa),
+
+    where C = Li_gamma(exp(-x/kappa)),  with Li_g(x) being the polylogarithm with index g
+    If  the cutoff  is very  small or  the  exponent is  too large,  the distribution  is
+    approximated by a delta function.  If the exponent is very small, the distribution is
+    approximated by a uniform distribution.
     """
 
     @staticmethod
     def pmf(params, domain=co.DEFAULT_PDF_MAX):
         """
-        Probability mass function of the discrete truncated power-law.
+        Probability mass function.
 
-        :param params: two elements list containing the exponent (gamma) and cutoff (lambda).
+        :param params: two elements list containing the exponent (gamma) and cutoff
+        (kappa).
         :param domain: domain size.
         :return: probability mass function.
         """
@@ -46,7 +51,8 @@ class TruncatedPowerLaw(co.RealDistribution):
         """
         Returns samples with discrete truncated power-law.
 
-        :param params: two elements list containing the exponent (gamma) and cutoff (lambda).
+        :param params: two elements list containing the exponent (gamma) and cutoff
+        (kappa).
         :param size: number of samples.
         :param domain: domain size.
         :return: numpy array of samples.
@@ -63,12 +69,14 @@ class TruncatedPowerLaw(co.RealDistribution):
                 return co.generate_discrete_samples(x, np.power(x, -params[0])*np.exp(-x/params[1]), size)
 
     @staticmethod
-    def log_likelihood(params, data):
+    def log_likelihood(params, data, nonzero=False):
         """
         Calculates the log-likelihood of the discrete truncated power-law on the data.
 
-        :param params: two elements list containing the exponent (gamma) and cutoff (lambda).
+        :param params: two elements list containing the exponent (gamma) and cutoff
+        (kappa).
         :param data: input data as a numpy array.
+        :param nonzero: unused.
         :return: log-likelihood.
         """
         nonzero_samples = data[np.where(data > 0)]
