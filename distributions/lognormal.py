@@ -36,7 +36,8 @@ class Lognormal(co.RealDistribution):
             return co.delta.pmf([exp(params[0])], domain)
         else:
             x = np.arange(1, domain+1)
-            return np.append([0.0], np.exp(-0.5*np.power((np.log(x)-params[0])/params[1], 2))/(x*params[1]*sqrt(2*np.pi)))
+            _pmf = np.append([0.0], np.exp(-0.5*np.power((np.log(x)-params[0])/params[1], 2))/x)
+            return _pmf/np.sum(_pmf)
 
     @staticmethod
     def samples(params, size=co.DEFAULT_SAMPLE_SIZE, domain=co.DEFAULT_SAMPLE_MAX):
@@ -49,7 +50,7 @@ class Lognormal(co.RealDistribution):
         :param domain: unused.
         :return: numpy array of samples.
         """
-        #return np.random.lognormal(params[0], params[1], size) FIXME continuous sampling
+        #return np.random.lognormal(params[0], params[1], size)  # FIXME continuous sampling
         if params[1] < co.EPSILON:
             return co.delta.samples([exp(params[0])], size)
         else:
@@ -82,7 +83,7 @@ class Lognormal(co.RealDistribution):
         else:
             return -np.sum(np.log(nonzero_samples))\
                 - np.sum(np.power(np.log(nonzero_samples)-params[0], 2))/(2*params[1]**2)\
-                - len(data)*log(params[1]*sqrt(2*np.pi))
+                - len(data)*ln(params[1]*sqrt(2*np.pi))
         """  # FIXME continuous log-likelihood
         nonzero_samples = data[np.where(data > 0)]
         if params[0] < co.EPSILON or params[1] < co.EPSILON:

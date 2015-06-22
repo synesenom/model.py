@@ -52,7 +52,7 @@ def get_sample_pmf(samples):
     :param samples: sample of values.
     :return: probability mass function as a numpy array.
     """
-    return np.histogram(samples, range(np.max(samples)))[0] / len(samples)
+    return np.histogram(samples.astype(int), range(int(np.max(samples))))[0] / len(samples)
 
 
 def get_sample_cdf(samples):
@@ -89,7 +89,7 @@ def cdf(distribution, params, domain=co.DEFAULT_PDF_MAX):
     return np.cumsum(pmf(distribution, params, domain=domain))
 
 
-def sample(distribution, params, size=co.DEFAULT_SAMPLE_SIZE):
+def samples(distribution, params, size=co.DEFAULT_SAMPLE_SIZE):
     """
     Returns samples from a given distribution.
 
@@ -98,7 +98,7 @@ def sample(distribution, params, size=co.DEFAULT_SAMPLE_SIZE):
     :param size: sample size
     :return: numpy array of samples.
     """
-    return DISTRIBUTIONS[distribution].sample(params, size=size)
+    return DISTRIBUTIONS[distribution].samples(params, size=size)
 
 
 def log_likelihood(distribution, params, data, nonzero_only=False):

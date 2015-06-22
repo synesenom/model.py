@@ -41,7 +41,7 @@ def print_pmfs(data, fit_results, output_name):
     for d in dist.get():
         pmfs[d] = dist.pmf(d, fit_results[d]['params'], domain=np.max(data)+1)
     output = []
-    for i in range(np.max(data)+1):
+    for i in range(np.max(data.astype(int))+1):
         row = [float(i), 0.0]
         for d in dist.get():
             row.append(pmfs[d][i])
@@ -132,7 +132,7 @@ def perform_ks_test(data, output_name, synthetic_samples_num=100):
         params = fit_results[d]['params']
         p = 0
         for r in range(synthetic_samples_num):
-            synthetic_sample = dist.sample(d, params, len(data))
+            synthetic_sample = dist.samples(d, params, len(data))
             ksd = me.ks_statistics(dist.get_sample_cdf(synthetic_sample), dist.cdf(d, params, np.max(synthetic_sample)))
             if ksd > fit_results[d]['D']:
                 p += 1

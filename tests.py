@@ -41,7 +41,7 @@ def test_sampling(distribution):
     print("  creating pdf")
     test_pmf = dist.pmf(distribution, params)
     print("  generating samples")
-    test_sample_pmf = dist.get_sample_pmf(dist.sample(distribution, params))
+    test_sample_pmf = dist.get_sample_pmf(dist.samples(distribution, params))
     test_distribution = []
     for i in range(len(test_pmf)):
         if i < len(test_sample_pmf):
@@ -67,7 +67,7 @@ def test_fit_mle(distribution):
     for sample_dist in dist.get():
         print("    %s" % sample_dist.upper())
         params = DEFAULT_TEST_PARAMS[sample_dist]
-        test_sample = dist.sample(sample_dist, params)
+        test_sample = dist.samples(sample_dist, params)
         fit_result = fit.fit_mle(distribution, test_sample)
         print("      input parameters: %s" % dist.get_params(params, sample_dist))
         print("      fit parameters: %s" % dist.get_params(fit_result['params'], distribution))
@@ -89,7 +89,7 @@ def test_fit_ks(distribution):
     for sample_dist in dist.get():
         print("    %s" % sample_dist.upper())
         params = DEFAULT_TEST_PARAMS[sample_dist]
-        test_sample = dist.sample(sample_dist, params)
+        test_sample = dist.samples(sample_dist, params)
         fit_results = fit.fit_ks(distribution, test_sample)
         print("      input parameters: %s" % dist.get_params(params, sample_dist))
         print("      fit parameters: %s" % dist.get_params(fit_results['params'], distribution))
@@ -110,7 +110,7 @@ def test_aic_ms(distribution):
     print("TESTING: AIC model selection for %s distribution" % distribution.upper())
     params = DEFAULT_TEST_PARAMS[distribution]
     print("  creating sample")
-    test_sample = dist.sample(distribution, params)
+    test_sample = dist.samples(distribution, params)
     print("  calculating AIC for all distributions")
     fit_results = {}
     aic = {}
@@ -148,7 +148,7 @@ def test_bic_ms(distribution):
     print("TESTING: BIC model selection for %s distribution" % distribution.upper())
     params = DEFAULT_TEST_PARAMS[distribution]
     print("  creating sample")
-    test_sample = dist.sample(distribution, params)
+    test_sample = dist.samples(distribution, params)
     print("  calculating BIC for all distributions")
     fit_results = {}
     bic = {}
@@ -182,7 +182,7 @@ def test_ks_ms(distribution):
     print("TESTING: K-S model selection for %s distribution" % distribution.upper())
     params = DEFAULT_TEST_PARAMS[distribution]
     print("  creating sample")
-    test_sample = dist.sample(distribution, params)
+    test_sample = dist.samples(distribution, params)
     print("  calculating K-S statistics for all distributions")
     print("  input parameters: %s" % dist.get_params(params, distribution))
     fit_results = {}
@@ -199,7 +199,7 @@ def test_ks_ms(distribution):
         params = fit_results[d]['params']
         p = 0
         for r in range(100):
-            synthetic_sample = dist.sample(d, params, len(test_sample))
+            synthetic_sample = dist.samples(d, params, len(test_sample))
             ksd = me.ks_statistics(dist.get_sample_cdf(synthetic_sample), dist.cdf(d, params, np.max(synthetic_sample)))
             if ksd > fit_results[d]['D']:
                 p += 1
