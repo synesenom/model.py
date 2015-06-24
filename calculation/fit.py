@@ -11,17 +11,6 @@ from calculation.measures import ks_statistics
 from scipy import optimize as op
 
 
-# Initial values of parameters for fitting
-INITIAL_FITTING_PARAMS = {
-    dist.DISTRIBUTION_POISSON: [10.0],
-    dist.DISTRIBUTION_EXPONENTIAL: [10.0],
-    dist.DISTRIBUTION_LOGNORMAL: [1.0, 0.5],
-    dist.DISTRIBUTION_WEIBULL: [3.2, 0.8],
-    dist.DISTRIBUTION_TRUNCATED_POWER_LAW: [1.2, 50.0],
-    dist.DISTRIBUTION_SHIFTED_POWER_LAW: [1.2, 1.0]
-}
-
-
 def fit_mle(distribution, data):
     """
     Fits a given distribution on the data using maximum likelihood estimation.
@@ -33,7 +22,7 @@ def fit_mle(distribution, data):
         log-likelihood
         K-S statistics.
     """
-    params = INITIAL_FITTING_PARAMS[distribution]
+    params = dist.DISTRIBUTIONS[distribution][dist.KEY_INITIAL_FIT_PARAMS]
     nll = lambda x: -dist.log_likelihood(distribution, x, data)
     res = op.minimize(nll, params, method='nelder-mead')
     return {'params': res.x,
@@ -53,7 +42,7 @@ def fit_ks(distribution, data):
         log-likelihood
         K-S statistics.
     """
-    params = INITIAL_FITTING_PARAMS[distribution]
+    params = dist.DISTRIBUTIONS[distribution][dist.KEY_INITIAL_FIT_PARAMS]
     data_max = int(max(data))
     sample_cdf = dist.get_sample_cdf(data)
     ksd = lambda x: ks_statistics(sample_cdf, dist.cdf(distribution, x, domain=data_max))

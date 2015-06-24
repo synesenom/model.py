@@ -14,6 +14,7 @@ from distributions.lognormal import lognormal
 from distributions.weibull import weibull
 from distributions.truncated_power_law import truncated_power_law
 from distributions.shifted_power_law import shifted_power_law
+from distributions.normal import normal
 
 
 # Distribution names
@@ -23,16 +24,33 @@ DISTRIBUTION_LOGNORMAL = 'lognormal'
 DISTRIBUTION_WEIBULL = 'weibull'
 DISTRIBUTION_SHIFTED_POWER_LAW = 'shifted-power-law'
 DISTRIBUTION_TRUNCATED_POWER_LAW = 'truncated-power-law'
+DISTRIBUTION_NORMAL = 'normal'
 
-
-# Dictionary containing the classes
+KEY_CLASS = 'class'
+KEY_TEST_PARAMS = 'test-params'
+KEY_INITIAL_FIT_PARAMS = 'initial-fit-params'
 DISTRIBUTIONS = {
-    DISTRIBUTION_POISSON: poisson,
-    DISTRIBUTION_EXPONENTIAL: exponential,
-    DISTRIBUTION_SHIFTED_POWER_LAW: shifted_power_law,
-    DISTRIBUTION_TRUNCATED_POWER_LAW: truncated_power_law,
-    DISTRIBUTION_LOGNORMAL: lognormal,
-    DISTRIBUTION_WEIBULL: weibull
+    DISTRIBUTION_POISSON: {KEY_CLASS: poisson,
+                           KEY_TEST_PARAMS: [3.4],
+                           KEY_INITIAL_FIT_PARAMS: [20.0]},
+    DISTRIBUTION_EXPONENTIAL: {KEY_CLASS: exponential,
+                               KEY_TEST_PARAMS: [17.0],
+                               KEY_INITIAL_FIT_PARAMS: [10.0]},
+    DISTRIBUTION_SHIFTED_POWER_LAW: {KEY_CLASS: shifted_power_law,
+                                     KEY_TEST_PARAMS: [2.3, 20.7],
+                                     KEY_INITIAL_FIT_PARAMS: [1.2, 1.0]},
+    DISTRIBUTION_TRUNCATED_POWER_LAW: {KEY_CLASS: truncated_power_law,
+                                       KEY_TEST_PARAMS: [2.3, 123.0],
+                                       KEY_INITIAL_FIT_PARAMS: [1.2, 50.0]},
+    DISTRIBUTION_LOGNORMAL: {KEY_CLASS: lognormal,
+                             KEY_TEST_PARAMS: [1.9, 1.1],
+                             KEY_INITIAL_FIT_PARAMS: [1.0, 0.5]},
+    DISTRIBUTION_WEIBULL: {KEY_CLASS: weibull,
+                           KEY_TEST_PARAMS: [0.5, 1.2],
+                           KEY_INITIAL_FIT_PARAMS: [3.2, 0.8]},
+    DISTRIBUTION_NORMAL: {KEY_CLASS: normal,
+                          KEY_TEST_PARAMS: [80.8, 8.9],
+                          KEY_INITIAL_FIT_PARAMS: [10.0, 5.0]}
 }
 
 
@@ -45,24 +63,24 @@ def get():
     return sorted(list(DISTRIBUTIONS.keys()))
 
 
-def get_sample_pmf(samples):
+def get_sample_pmf(values):
     """
     Creates the probability mass function from a sample of values.
 
-    :param samples: sample of values.
+    :param values: sample of values.
     :return: probability mass function as a numpy array.
     """
-    return np.histogram(samples.astype(int), range(int(np.max(samples))))[0] / len(samples)
+    return np.histogram(values.astype(int), range(int(np.max(values))))[0] / len(values)
 
 
-def get_sample_cdf(samples):
+def get_sample_cdf(values):
     """
     Creates the cumulative distribution from a sample of values.
 
-    :param samples: sample of values.
+    :param values: sample of values.
     :return: cumulative distribution.
     """
-    return np.cumsum(get_sample_pmf(samples))
+    return np.cumsum(get_sample_pmf(values))
 
 
 def pmf(distribution, params, domain=co.DEFAULT_PDF_MAX):
@@ -74,7 +92,7 @@ def pmf(distribution, params, domain=co.DEFAULT_PDF_MAX):
     :param domain: domain size.
     :return: probability mass function.
     """
-    return DISTRIBUTIONS[distribution].pmf(params, domain=domain)
+    return DISTRIBUTIONS[distribution][KEY_CLASS].pmf(params, domain=domain)
 
 
 def cdf(distribution, params, domain=co.DEFAULT_PDF_MAX):
@@ -98,7 +116,7 @@ def samples(distribution, params, size=co.DEFAULT_SAMPLE_SIZE):
     :param size: sample size
     :return: numpy array of samples.
     """
-    return DISTRIBUTIONS[distribution].samples(params, size=size)
+    return DISTRIBUTIONS[distribution][KEY_CLASS].samples(params, size=size)
 
 
 def log_likelihood(distribution, params, data, nonzero_only=False):
@@ -111,7 +129,7 @@ def log_likelihood(distribution, params, data, nonzero_only=False):
     :param nonzero_only: whether only non-zero data points should be used.
     :return: log-likelihood.
     """
-    return DISTRIBUTIONS[distribution].log_likelihood(params, data, nonzero_only)
+    return DISTRIBUTIONS[distribution][KEY_CLASS].log_likelihood(params, data, nonzero_only)
 
 
 def get_params(params, distribution):
@@ -122,4 +140,4 @@ def get_params(params, distribution):
     :param distribution: distribution to use.
     :return: printable string of the parameter values.
     """
-    return DISTRIBUTIONS[distribution].get_params(params)
+    return DISTRIBUTIONS[distribution][KEY_CLASS].get_params(params)

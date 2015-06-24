@@ -7,6 +7,7 @@
 #usage          : python poisson.py
 #=====================================================
 import numpy as np
+from scipy import special as sp
 from scipy import stats
 from mpmath import ln
 
@@ -52,22 +53,30 @@ class Poisson(co.RealDistribution):
             return np.random.poisson(params[0], size)
 
     @staticmethod
-    def log_likelihood(params, data, nonzero=False):
+    def log_likelihood(params, data, nonzero_only=False):
         """
         Calculates the log-likelihood on the data.
+        The factorial is approximated by using Stirling's formula.
 
         :param params: a one element list containing the shape (lambda) parameter.
         :param data: input data as a numpy array.
-        :param nonzero: unused.
+        :param nonzero_only: whether nonzero element should be considered only.  This is
+        used after determining the parameters and comparing to distributions that ignore
+        zero values.
         :return: log-likelihood.
         """
-        _nonzero_samples = data[np.where(data > 0)]
+        nonzero_samples = data[np.where(data > 0)]
         if params[0] < co.EPSILON:
             return co.delta.log_likelihood([0], data)
         else:
-            return np.sum(data)*ln(params[0])\
-                - len(data)*params[0]\
-                - len(data) - np.sum(_nonzero_samples*np.log(_nonzero_samples) - _nonzero_samples)
+            if nonzero_only:
+                _sampes = data[np.where(data > 0)]
+            else:
+                _sampes = data
+            return np.sum(_sampes)*ln(params[0])\
+                - len(_sampes)*params[0]\
+                - 0.5*len(_sampes)*ln(2*np.pi) - np.sum((0.5+nonzero_samples)*np.log(nonzero_samples)-nonzero_samples)\
+                - np.sum(np.log(1+1/(12*nonzero_samples)+1/(288*np.power(nonzero_samples, 2))))
 
     @staticmethod
     def get_params(params):

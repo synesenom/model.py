@@ -108,8 +108,9 @@ class Delta(RealDistribution):
         :param domain: domain size.
         :return: probability mass function.
         """
+        real_domain = max(int(params[0]), domain)
         _pmf = np.append(np.zeros(int(params[0])), [1.0])
-        return np.append(_pmf, np.zeros(domain-int(params[0])-1))
+        return np.append(_pmf, np.zeros(real_domain-int(params[0])))
 
     @staticmethod
     def samples(params, size=DEFAULT_SAMPLE_SIZE, domain=DEFAULT_SAMPLE_MAX):

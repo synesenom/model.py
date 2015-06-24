@@ -10,8 +10,8 @@ Model selection based on various methods
 :License: MIT
 
 This python script (model.py) implements model selection for discrete distributions.
-As being motivated by degree distributions in complex networks, currently it supports only integer distributions and
-the following models:
+As being motivated by degree distributions in complex networks, currently it supports only distributions over
+non-negative integers and the following models:
 
 - Poisson
 - exponential
@@ -19,6 +19,7 @@ the following models:
 - Weibull
 - shifted power-law
 - truncated power-law (power-law with cutoff)
+- normal
 
 
 Requirements

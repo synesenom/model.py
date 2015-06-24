@@ -19,7 +19,7 @@ class Lognormal(co.RealDistribution):
     Lognormal(x) = C * exp(-(ln(x)-mu)^2 / (2*sigma^2)) / x,
 
     where C = 1/(sigma*sqrt(2*pi)).
-    If the shape parameter is very small, a delta distribution is used.
+    If the shape (sigma) parameter is very small, a delta distribution is used.
     """
 
     @staticmethod
@@ -66,9 +66,7 @@ class Lognormal(co.RealDistribution):
         :param params: two elements list with the location (mu) and shape (sigma)
         parameters.
         :param data: input data as a numpy array.
-        :param nonzero_only: whether nonzero element should be considered only.  This is
-        used after determining the parameters and comparing to distributions that ignore
-        zero values.
+        :param nonzero_only: unused.
         :return: log-likelihood.
         """
         """

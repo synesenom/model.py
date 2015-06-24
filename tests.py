@@ -15,17 +15,6 @@ from calculation import measures as me
 from calculation.model_selection import print_pmfs
 
 
-# Default parameters for testing
-DEFAULT_TEST_PARAMS = {
-    dist.DISTRIBUTION_POISSON: [3.4],
-    dist.DISTRIBUTION_EXPONENTIAL: [17.0],
-    dist.DISTRIBUTION_LOGNORMAL: [1.9, 1.1],
-    dist.DISTRIBUTION_WEIBULL: [0.5, 1.2],
-    dist.DISTRIBUTION_TRUNCATED_POWER_LAW: [2.3, 123.0],
-    dist.DISTRIBUTION_SHIFTED_POWER_LAW: [2.3, 20.7]
-}
-
-
 def test_sampling(distribution):
     """
     Tests sampling method for a given distribution.
@@ -36,7 +25,7 @@ def test_sampling(distribution):
     :param distribution: distribution to test.
     """
     print("TESTING: sampling for %s distribution" % distribution)
-    params = DEFAULT_TEST_PARAMS[distribution]
+    params = dist.DISTRIBUTIONS[distribution][dist.KEY_TEST_PARAMS]
     print("  input parameters: %s" % dist.get_params(params, distribution))
     print("  creating pdf")
     test_pmf = dist.pmf(distribution, params)
@@ -66,7 +55,7 @@ def test_fit_mle(distribution):
     print("  fitting to others")
     for sample_dist in dist.get():
         print("    %s" % sample_dist.upper())
-        params = DEFAULT_TEST_PARAMS[sample_dist]
+        params = dist.DISTRIBUTIONS[sample_dist][dist.KEY_TEST_PARAMS]
         test_sample = dist.samples(sample_dist, params)
         fit_result = fit.fit_mle(distribution, test_sample)
         print("      input parameters: %s" % dist.get_params(params, sample_dist))
@@ -88,7 +77,7 @@ def test_fit_ks(distribution):
     print("  fitting to others")
     for sample_dist in dist.get():
         print("    %s" % sample_dist.upper())
-        params = DEFAULT_TEST_PARAMS[sample_dist]
+        params = dist.DISTRIBUTIONS[sample_dist][dist.KEY_TEST_PARAMS]
         test_sample = dist.samples(sample_dist, params)
         fit_results = fit.fit_ks(distribution, test_sample)
         print("      input parameters: %s" % dist.get_params(params, sample_dist))
@@ -108,7 +97,7 @@ def test_aic_ms(distribution):
     :return:
     """
     print("TESTING: AIC model selection for %s distribution" % distribution.upper())
-    params = DEFAULT_TEST_PARAMS[distribution]
+    params = dist.DISTRIBUTIONS[distribution][dist.KEY_TEST_PARAMS]
     print("  creating sample")
     test_sample = dist.samples(distribution, params)
     print("  calculating AIC for all distributions")
@@ -146,7 +135,7 @@ def test_bic_ms(distribution):
     :return:
     """
     print("TESTING: BIC model selection for %s distribution" % distribution.upper())
-    params = DEFAULT_TEST_PARAMS[distribution]
+    params = dist.DISTRIBUTIONS[distribution][dist.KEY_TEST_PARAMS]
     print("  creating sample")
     test_sample = dist.samples(distribution, params)
     print("  calculating BIC for all distributions")
@@ -158,14 +147,18 @@ def test_bic_ms(distribution):
                                 len(fit_results[d]['params']), len(test_sample))
     delta_bic = {d: bic[d]-min(bic.values()) for d in bic}
     weights = {d: float(exp(-delta_bic[d]/2)) for d in delta_bic}
+    best_model = dist.get()[0]
     print("  input parameters: %s" % dist.get_params(params, distribution))
     for d in dist.get():
+        if weights[d] > weights[best_model]:
+            best_model = d
         weights[d] /= sum(weights.values())
         print("  %s:" % d.upper())
         print("    %s" % dist.get_params(fit_results[d]['params'], d))
         print("    BIC  = %.0f" % bic[d])
         print("    dBIC = %.0f" % delta_bic[d])
         print("    w    = %r" % weights[d])
+    print("  Most likely model: %s" % best_model.upper())
     print_pmfs(test_sample, fit_results, 'TEST-BIC.CSV')
 
 
@@ -180,7 +173,7 @@ def test_ks_ms(distribution):
     :return:
     """
     print("TESTING: K-S model selection for %s distribution" % distribution.upper())
-    params = DEFAULT_TEST_PARAMS[distribution]
+    params = dist.DISTRIBUTIONS[distribution][dist.KEY_TEST_PARAMS]
     print("  creating sample")
     test_sample = dist.samples(distribution, params)
     print("  calculating K-S statistics for all distributions")
@@ -204,5 +197,5 @@ def test_ks_ms(distribution):
             if ksd > fit_results[d]['D']:
                 p += 1
         print("    p = %r" % (float(p)/100.0))
-    print("  Most likely model: %s" % best_model.upper())
+    print("  Best fitting model: %s" % best_model.upper())
     print_pmfs(test_sample, fit_results, 'TEST-KS.CSV')
