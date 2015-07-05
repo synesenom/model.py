@@ -7,6 +7,7 @@
 #usage          : python model.py
 # TODO log-logistic, logistic, gumbel
 #===================================================================
+from sys import exit
 from core import args
 from core import utils
 from distributions import distribution as dist
@@ -58,6 +59,17 @@ if params['test_ks_ms'] is not None:
 
 # Calculations
 if params['select'] is not None:
+    # check if input/output files were given
+    errNum = 0
+    if params['input'] is None:
+        print("Error: no input file was given.")
+        errNum += 1
+    if params['output'] is None:
+        print("Error: no output file was given.")
+        errNum += 1
+    if errNum > 0:
+        exit()
+
     print("reading data")
     data = []
     for row in utils.read_csv(params['input']):
