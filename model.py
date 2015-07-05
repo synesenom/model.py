@@ -61,7 +61,8 @@ if params['select'] is not None:
     print("reading data")
     data = []
     for row in utils.read_csv(params['input']):
-        data.append(float(row[0]))
+        if len(row) > 0:
+            data.append(float(row[0]))
 
     if params['select'] == ms.MODEL_SELECTION_METHOD_AIC:
         ms.perform_aic_test(data, params['output'])

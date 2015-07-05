@@ -76,7 +76,6 @@ class Normal(co.RealDistribution):
         zero values.
         :return: log-likelihood.
         """
-
         if params[0] < co.EPSILON:
             return co.delta.log_likelihood([0], data)
         elif params[1] < co.EPSILON:
