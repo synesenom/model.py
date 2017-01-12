@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-#title          : model.py
-#description    : Selects the best model for a sample.
-#author         : Enys Mones
-#date           : 2015.06.10
-#version        : 0.1
-#usage          : python model.py
+# title          : model.py
+# description    : Selects the best model for a sample.
+# author         : Enys Mones
+# date           : 2015.06.10
+# version        : 0.1
+# usage          : python model.py
 # TODO log-logistic, logistic, gumbel
-#===================================================================
+# ===================================================================
 from sys import exit
 from core import args
 from core import utils
